@@ -1,0 +1,174 @@
+/**
+ * JavaCC template file created by SF JavaCC plugin 1.5.28+ wizard for JavaCC 1.5.0+
+ */options{  static = false;}PARSER_BEGIN(RecordGrammer)package biz.uro.CSVDataConverter.swing.builder.parser;
+
+import java.util.ArrayList;
+import biz.uro.CSVDataConverter.database.Record;
+import biz.uro.CSVDataConverter.database.Table;
+import biz.uro.CSVDataConverter.database.element.ElementValue;
+import org.apache.commons.lang3.StringUtils;
+
+public class RecordGrammer {	public String parseRecord( Table table, Record record ) {
+		try {
+			return script( record );
+		}
+		catch ( RuntimeException e1 ) {
+			final RuntimeException e12 = new RuntimeException( table.getName() + "=>" + jj_input_stream.GetImage() + "\n" + e1.toString() + "\n" + e1.getMessage() + "\n" + e1.getCause() );
+			e12.setStackTrace( e1.getStackTrace() );
+			throw e12;
+		}
+		catch ( ParseException e2 ) {
+			final RuntimeException e22 = new RuntimeException( table.getName() + "=>" + jj_input_stream.GetImage() + "\n" + e2.toString() + "\n" + e2.getMessage() + "\n" + e2.getCause() );
+			e22.setStackTrace( e2.getStackTrace() );
+			throw e22;
+		}
+	}
+}PARSER_END(RecordGrammer)SKIP :{  " "| "\r"| "\t"| "\n"}
+TOKEN :
+{
+	< USETOKEN : "token" >
+|	< TOSTRING : "toString" >
+|	< PROGRAM : "program" >
+}
+
+TOKEN :
+{
+	< DOT : "." >
+|	< HEAD : "#" >
+|	< LPAREN : "(" >
+|	< RPAREN : ")" >
+|	< LBRACKET : "[" >
+|	< RBRACKET : "]" >
+|	< COLON : "," >
+}
+TOKEN :{  < NUMBER : (< DIGIT >)+ >| < #DIGIT : [ "0"-"9" ] >}
+TOKEN :
+{
+	< STRING : "\"" ( ~["\""] )* "\"" >
+}
+
+String script( Record record ) :
+{
+	Token token;
+	String base;
+	Object obj;
+	ArrayList<Object> args = new ArrayList<Object>();
+}
+{
+	token = < STRING >
+	{
+		base = StringUtils.remove( token.image, "\"" );
+	}
+	< COLON >
+	obj = value( record )
+	{
+		args.add( obj );
+	}
+	(
+		< COLON >
+		obj = value( record )
+		{
+			args.add( obj );
+		}
+	)*
+	< EOF >
+	{
+		return String.format( base, args.toArray() );
+	}
+}
+
+Object value( Record record ) :
+{
+	Token token;
+	ElementValue elementValue;
+	int index;
+}
+{
+	< HEAD > 
+	elementValue = elementValue( record )
+	(
+		< DOT >
+		(
+			< USETOKEN >
+			< LPAREN >
+			token = < NUMBER >
+			{
+				index = Integer.parseInt( token.image );
+			}
+			< RPAREN >
+			{
+				return elementValue.getUseToken( index );
+			}
+		|
+			< TOSTRING >
+			< LPAREN >
+			< RPAREN >
+			{
+				return elementValue.toString();
+			}
+		|
+			< PROGRAM >
+			< LPAREN >
+			< RPAREN >
+			{
+				return elementValue.getProgram();
+			}
+		)
+	)?
+	{
+		return elementValue.getValue();
+	}
+}
+
+ElementValue elementValue( Record record ) :
+{
+	RecordPointer ret;
+	RecordPointer next;
+}
+{
+	ret = pointer()
+	(
+		LOOKAHEAD(1)
+		< DOT >
+		next = pointer()
+		{
+			ret.next( next );
+		}	)*
+	{
+		return ret.getElementValue( record );
+	}
+}
+
+RecordPointer pointer() :
+{
+	int index;
+}
+{
+	token = < NUMBER >
+	index = index()
+	{
+		return new RecordPointer( Integer.parseInt( token.image ), index );
+	}
+}
+
+int index() :
+{
+	int ret;
+	Token token;
+}
+{
+	(		< LBRACKET >
+		token = < NUMBER >
+		{
+			ret = Integer.parseInt( token.image );
+		}
+		< RBRACKET >
+	|
+		{
+			ret = 0;
+		}
+	)
+	{
+		return ret;
+	}
+}
