@@ -1,32 +1,7 @@
 package biz.uro.CSVDataConverter.swing.window;
 
-import javax.swing.JFrame;
-import javax.swing.JTree;
-
 import java.awt.BorderLayout;
 import java.awt.Component;
-
-import biz.uro.CSVDataConverter.swing.ProjectDataModel;
-import biz.uro.CSVDataConverter.swing.builder.ElementTypeBuilder;
-import biz.uro.CSVDataConverter.swing.builder.FactoryBuilder;
-import biz.uro.CSVDataConverter.swing.builder.ProjectData;
-import biz.uro.CSVDataConverter.swing.builder.TableBuilder;
-import biz.uro.CSVDataConverter.swing.old.PropertyWindow;
-import biz.uro.CSVDataConverter.swing.window.tab.SchemaTreeDataModel;
-import biz.uro.CSVDataConverter.swing.window.tab.elementType.ElementTypePropertyWindow;
-import biz.uro.CSVDataConverter.swing.window.tab.factory.FactoryPropertyWindow;
-import biz.uro.CSVDataConverter.swing.window.tab.table.TablePropertyWindow;
-
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import javax.swing.JScrollPane;
-import javax.swing.JPanel;
-import javax.swing.ScrollPaneConstants;
-import javax.swing.SwingUtilities;
-import javax.swing.tree.DefaultTreeCellRenderer;
-import javax.swing.tree.TreePath;
-import javax.swing.JLabel;
-
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -36,7 +11,28 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 import javax.swing.BoxLayout;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
+import javax.swing.JScrollPane;
+import javax.swing.JTree;
+import javax.swing.ScrollPaneConstants;
+import javax.swing.SwingUtilities;
+import javax.swing.tree.DefaultTreeCellRenderer;
+import javax.swing.tree.TreePath;
+
+import biz.uro.CSVDataConverter.swing.ProjectDataModel;
+import biz.uro.CSVDataConverter.swing.builder.ElementTypeBuilder;
+import biz.uro.CSVDataConverter.swing.builder.FactoryBuilder;
+import biz.uro.CSVDataConverter.swing.builder.ProjectData;
+import biz.uro.CSVDataConverter.swing.builder.TableBuilder;
+import biz.uro.CSVDataConverter.swing.window.tab.SchemaTreeDataModel;
+import biz.uro.CSVDataConverter.swing.window.tab.elementType.ElementTypePropertyWindow;
+import biz.uro.CSVDataConverter.swing.window.tab.factory.FactoryPropertyWindow;
+import biz.uro.CSVDataConverter.swing.window.tab.table.TablePropertyWindow;
 
 public class ProjectTreeWindow {
 
@@ -61,24 +57,36 @@ public class ProjectTreeWindow {
 			return super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
 		}
 	}
-	
+
 	protected class ShowObjectHandler extends MouseAdapter implements KeyListener {
-		
+
+		private TreePath mPrevClickTreePath;
+
 		//マウスイベント
 		@Override
 		public void mouseClicked(MouseEvent e) {
-			if (SwingUtilities.isLeftMouseButton(e) && e.getClickCount() == 2) {
+			if (SwingUtilities.isLeftMouseButton(e)) {
 				JTree tree = (JTree) e.getSource();
 				TreePath path = tree.getPathForLocation(e.getX(), e.getY());
-				openByNewTab(path);
+				if (e.getClickCount() == 1)
+				{
+					mPrevClickTreePath = path;
+					return;
+				}
+				if (mPrevClickTreePath != null && mPrevClickTreePath.equals(path))
+				{
+					openByNewTab(path);
+				}
+				return;
 			}
 			if (SwingUtilities.isRightMouseButton(e)) {
 				JTree tree = (JTree) e.getSource();
 				TreePath path = tree.getPathForLocation(e.getX(), e.getY());
 				showPopupMenu(e.getX(), e.getY(), path);
+				return;
 			}
 		}
-		
+
 		//キーイベント
 		@Override
 		public void keyPressed(KeyEvent e) {
@@ -90,7 +98,7 @@ public class ProjectTreeWindow {
 				e.consume();
 			}
 		}
-		
+
 		@Override
 		public void keyReleased(KeyEvent e) {
 		}
@@ -98,9 +106,9 @@ public class ProjectTreeWindow {
 		@Override
 		public void keyTyped(KeyEvent e) {
 		}
-		
+
 	}
-	
+
 	/**
 	 * Create the application.
 	 */
@@ -116,35 +124,35 @@ public class ProjectTreeWindow {
 		frame = new JFrame();
 		frame.setBounds(100, 100, 439, 501);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
-		
+
+
 		mScrollPane = new JScrollPane();
 		frame.getContentPane().add(mScrollPane, BorderLayout.CENTER);
 		mScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		mScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
-		
+
 		JPanel panel = new JPanel();
 		frame.getContentPane().add(panel, BorderLayout.SOUTH);
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-		
+
 		panel_1 = new JPanel();
 		FlowLayout flowLayout = (FlowLayout) panel_1.getLayout();
 		flowLayout.setAlignment(FlowLayout.LEFT);
 		panel.add(panel_1);
-		
+
 		lblNewLabel = new JLabel("型の名前");
 		panel_1.add(lblNewLabel);
-		
+
 		panel_2 = new JPanel();
 		FlowLayout flowLayout_1 = (FlowLayout) panel_2.getLayout();
 		flowLayout_1.setAlignment(FlowLayout.LEFT);
 		panel.add(panel_2);
-		
+
 		lblNewLabel_1 = new JLabel("コメント");
 		panel_2.add(lblNewLabel_1);
-		
+
 		JMenu menu_newItem = new JMenu("新規");
-		
+
 		ProjectTreeNode.Type[] types = new ProjectTreeNode.Type[]{
 			ProjectTreeNode.Type.TABLE,
 			ProjectTreeNode.Type.FACTORY,
@@ -159,10 +167,30 @@ public class ProjectTreeWindow {
 				public void actionPerformed(ActionEvent e) {
 					createByNewTab(type, mPopupMenuTargetNode);
 				}
-			});			
+			});
 		}
-		
+
 		popupMenu.add(menu_newItem);
+
+		JMenuItem menu_edit = new JMenuItem("編集");
+		menu_edit.addActionListener( new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				editByNewWindow(mPopupMenuTargetNode);
+			}
+		});
+
+		popupMenu.add(menu_edit);
+
+		JMenuItem menu_delete = new JMenuItem("削除");
+		menu_delete.addActionListener( new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				deleteByNewWindow(mPopupMenuTargetNode);
+			}
+		});
+
+		popupMenu.add(menu_delete);
 	}
 
 	public void setProjectDataModel(ProjectData data)
@@ -174,15 +202,15 @@ public class ProjectTreeWindow {
 			ShowObjectHandler handler = new ShowObjectHandler();
 			mTree.addMouseListener(handler);
 			mTree.addKeyListener(handler);
-			mTree.setCellRenderer(new ProjectTreeCellRenderer());				
-			mScrollPane.setViewportView(mTree);			
+			mTree.setCellRenderer(new ProjectTreeCellRenderer());
+			mScrollPane.setViewportView(mTree);
 		}
 		else
 		{
-			mTree.setModel(mTreeDataModel);			
+			mTree.setModel(mTreeDataModel);
 		}
 	}
-	
+
 	protected void showPopupMenu(int x, int y, TreePath path) {
 		if (path == null) {
 			return;
@@ -190,12 +218,12 @@ public class ProjectTreeWindow {
 		mPopupMenuTargetNode = (ProjectTreeNode) path.getLastPathComponent();
 		popupMenu.show(mTree, x, y);
 	}
-	
+
 	protected void createByNewTab(ProjectTreeNode.Type type, ProjectTreeNode node) {
 		if (type == ProjectTreeNode.Type.TABLE) {
 			TablePropertyWindow window = WindowDirector.INSTANCE.getTablePropertyWindow();
 			window.reservePackage(node.getPackageNode().getPackage());
-			window.newData( 
+			window.newData(
 				new PropertyWindow.IItemBuildListener<TableBuilder>() {
 					@Override
 					public void onBuild(TableBuilder newItem) {
@@ -207,7 +235,7 @@ public class ProjectTreeWindow {
 		if (type == ProjectTreeNode.Type.FACTORY) {
 			FactoryPropertyWindow window = WindowDirector.INSTANCE.getFactoryPropertyWindow();
 			window.reservePackage(node.getPackageNode().getPackage());
-			window.newData( 
+			window.newData(
 				new PropertyWindow.IItemBuildListener<FactoryBuilder>() {
 					@Override
 					public void onBuild(FactoryBuilder newItem) {
@@ -219,7 +247,7 @@ public class ProjectTreeWindow {
 		if (type == ProjectTreeNode.Type.ELEMENT) {
 			ElementTypePropertyWindow window = WindowDirector.INSTANCE.getElementTypePropertyWindow();
 			window.reservePackage(node.getPackageNode().getPackage());
-			window.newData( 
+			window.newData(
 				new PropertyWindow.IItemBuildListener<ElementTypeBuilder>() {
 					@Override
 					public void onBuild(ElementTypeBuilder newItem) {
@@ -241,5 +269,52 @@ public class ProjectTreeWindow {
 		}
 		WindowDirector.INSTANCE.getMainMenu().openByNewTab(node.createTab());
 	}
-	
+
+	protected void editByNewWindow(ProjectTreeNode node) {
+		if (node == null) {
+			return;
+		}
+		//オブジェクトの場合
+		if (node.isLeaf()) {
+			ProjectTreeNode.Type type = node.getNodeType();
+			if (type == ProjectTreeNode.Type.TABLE) {
+				TablePropertyWindow window = WindowDirector.INSTANCE.getTablePropertyWindow();
+				window.reservePackage(node.getPackageNode().getPackage());
+				window.editData((TableBuilder)node.getDataModel());
+			}
+			if (type == ProjectTreeNode.Type.FACTORY) {
+				FactoryPropertyWindow window = WindowDirector.INSTANCE.getFactoryPropertyWindow();
+				window.reservePackage(node.getPackageNode().getPackage());
+				window.editData((FactoryBuilder)node.getDataModel());
+			}
+			if (type == ProjectTreeNode.Type.ELEMENT) {
+				ElementTypePropertyWindow window = WindowDirector.INSTANCE.getElementTypePropertyWindow();
+				window.reservePackage(node.getPackageNode().getPackage());
+				window.editData((ElementTypeBuilder)node.getDataModel());
+			}
+		}
+		mTreeDataModel.onUpdateProjectData();
+		//パッケージパスの場合
+		//TODO: パッケージパスをの一部を変更した時にパッケージに属するクラスのパッケージにも変更を反映させる
+	}
+
+	protected void deleteByNewWindow(ProjectTreeNode node) {
+		if (node == null) {
+			return;
+		}
+		if (node.isLeaf()) {
+			ProjectTreeNode.Type type = node.getNodeType();
+			if (type == ProjectTreeNode.Type.TABLE) {
+				ProjectDataModel.INSTANCE.getProjectData().getTableDataModel().removeElement((TableBuilder)node.getDataModel());
+			}
+			if (type == ProjectTreeNode.Type.FACTORY) {
+				ProjectDataModel.INSTANCE.getProjectData().getFactoryModel().removeElement((FactoryBuilder)node.getDataModel());
+			}
+			if (type == ProjectTreeNode.Type.ELEMENT) {
+				ProjectDataModel.INSTANCE.getProjectData().getElementTypeModel().removeElement((ElementTypeBuilder)node.getDataModel());
+			}
+		}
+		mTreeDataModel.onUpdateProjectData();
+	}
+
 }

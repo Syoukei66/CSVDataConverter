@@ -32,7 +32,7 @@ public abstract class ProgramGenerator {
 	}
 	
 	protected void generate( String directoryPath, IProgramGenerateProcess process ) throws Exception {
-		final TextFileWriter writer = new TextFileWriter( process.generateFileName(), process.generatePackage(), directoryPath );
+		final TextFileWriter writer = TextFileWriter.CraeateWithPackage( process.generateFileName(), process.generatePackage(), directoryPath, "java" );
 		writer.open();
 		writer.write( generateProgram( process ) );
 		writer.close();

@@ -18,22 +18,22 @@ public class DataListModel<T extends IDataModel> implements ListModel<T>, ComboB
 	public interface IOnListChangedListener<T extends IDataModel> {
 		void onListChanged( DataListModel<T> model );
 	}
-	
+
 	protected final ArrayList<T> mConstants = new ArrayList<>();
 	protected final DefaultListModel<T> mListModel = new DefaultListModel<>();
 	private final DefaultComboBoxModel<T> mComboBoxModel = new DefaultComboBoxModel<>();
 	private final ArrayList<IOnListChangedListener<T>> mListChangedListener = new ArrayList<>();
-	
+
 	public DataListModel() {
 		mListModel.addListDataListener( new ListDataListener() {
 			@Override
 			public void intervalRemoved(ListDataEvent e) {
 			}
-			
+
 			@Override
 			public void intervalAdded(ListDataEvent e) {
 			}
-			
+
 			@Override
 			public void contentsChanged(ListDataEvent e) {
 				onListChanged();
@@ -58,30 +58,30 @@ public class DataListModel<T extends IDataModel> implements ListModel<T>, ComboB
 		mListChangedListener.add( listener );
 		listener.onListChanged( this );
 	}
-	
+
 	private void onListChanged() {
 		for ( IOnListChangedListener<T> listener : mListChangedListener ) {
-			listener.onListChanged( this );	
+			listener.onListChanged( this );
 		}
 	}
-	
+
 	public void addConstants( T element ) {
 		mConstants.add( element );
 		addElement( element );
 	}
 
-	/* ========================================================== 
+	/* ==========================================================
 	 * delegate
 	 * ========================================================== */
-		
+
 	public int size() {
 		return mListModel.getSize();
 	}
-	
+
 	public T get( int index ) {
 		return mListModel.get( index );
 	}
-	
+
 	public void addWithoutEvents( int index, T element ) {
 		mListModel.add( index, element );
 	}
@@ -90,13 +90,22 @@ public class DataListModel<T extends IDataModel> implements ListModel<T>, ComboB
 		addWithoutEvents( index, element );
 		onListChanged();
 	}
-	
+
 	public void removeWithoutEvents( int index ) {
 		mListModel.remove( index );
 	}
-	
+
 	public void remove( int index ) {
 		removeWithoutEvents( index );
+		onListChanged();
+	}
+
+	public void removeElementWithoutEvents( T element) {
+		mListModel.removeElement( element );
+	}
+
+	public void removeElement( T element) {
+		removeElementWithoutEvents( element );
 		onListChanged();
 	}
 
@@ -112,19 +121,19 @@ public class DataListModel<T extends IDataModel> implements ListModel<T>, ComboB
 	public Object[] toArray() {
 		return mListModel.toArray();
 	}
-	
+
 	public T[] toArray( T[] array ) {
 		for ( int i = 0; i < array.length; i++ ) {
 			array[i] = mListModel.get( i );
 		}
 		return array;
 	}
-	
+
 	public List<T> asList( T[] array ) {
 		return Arrays.asList( toArray( array ) );
 	}
-	
-	/* ========================================================== 
+
+	/* ==========================================================
 	 * override
 	 * ========================================================== */
 

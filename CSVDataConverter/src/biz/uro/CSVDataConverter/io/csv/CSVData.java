@@ -7,10 +7,10 @@ import java.util.ArrayList;
 import biz.uro.CSVDataConverter.io.TextFileReader;
 
 public class CSVData {
-	
+
 	private TextFileReader mLoader;
 	private ArrayList<String> mLines;
-	
+
 	public CSVData( String fileName ) {
 		mLoader = new TextFileReader( fileName, "csv" );
 		mLines = new ArrayList<>();
@@ -34,11 +34,11 @@ public class CSVData {
 		mLoader = null;
 		mLines.clear();
 	}
-	
+
 	public CSVLineReader createTokenizer( int lineIndex ) {
 		return new CSVLineReader( mLines.get( lineIndex ) );
 	}
-	
+
 	public int getSize() {
 		return mLines.size();
 	}

@@ -27,9 +27,9 @@ import biz.uro.CSVDataConverter.swing.constants.Constants;
 import biz.uro.CSVDataConverter.swing.json.IJSONDataModel;
 import biz.uro.CSVDataConverter.swing.old.DataListModel;
 import biz.uro.CSVDataConverter.swing.old.JSONListModel;
-import biz.uro.CSVDataConverter.swing.old.PropertyWindow;
 import biz.uro.CSVDataConverter.swing.old.DataListModel.IOnListChangedListener;
-import biz.uro.CSVDataConverter.swing.old.PropertyWindow.IItemBuildListener;
+import biz.uro.CSVDataConverter.swing.window.PropertyWindow;
+import biz.uro.CSVDataConverter.swing.window.PropertyWindow.IItemBuildListener;
 
 public class EditableList<T extends IJSONDataModel> extends JPanel implements IOnListChangedListener<T> {
 

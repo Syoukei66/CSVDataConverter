@@ -19,7 +19,7 @@ public class NativeCodeWriter {
 	
 	public void write( String directoryPath ) throws Exception {
 		for ( NativeCodeKind kind : mOutputNativeCodes ) {
-			final TextFileWriter writer = new TextFileWriter( kind.mClassName, NativeCodeKind.NATIVE_CODE_PACKAGE, directoryPath );
+			final TextFileWriter writer = TextFileWriter.CraeateWithPackage( kind.mClassName, NativeCodeKind.NATIVE_CODE_PACKAGE, directoryPath, "java" );
 			writer.open();
 			writer.write( kind.load() );
 			writer.close();

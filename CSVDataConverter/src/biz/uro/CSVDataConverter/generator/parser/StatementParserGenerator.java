@@ -1,5 +1,7 @@
 package biz.uro.CSVDataConverter.generator.parser;
 
+import static biz.uro.CSVDataConverter.generator.parser.ParserConstants.*;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -18,7 +20,6 @@ import biz.uro.CSVDataConverter.swing.builder.ElementParserBuilder;
 import biz.uro.CSVDataConverter.swing.builder.PackageBuilder;
 import biz.uro.CSVDataConverter.swing.builder.StatementBuilder;
 import biz.uro.CSVDataConverter.swing.old.JSONListModel;
-import static biz.uro.CSVDataConverter.generator.parser.ParserConstants.*;
 
 public class StatementParserGenerator extends ProgramGenerator {
 
@@ -48,7 +49,11 @@ public class StatementParserGenerator extends ProgramGenerator {
 					final JSONListModel<ElementParserBuilder> model = statement.getParserListModel();
 					final List<ElementParserBuilder> parsers = model.asList( new ElementParserBuilder[model.size()] );
 					for ( ElementParserBuilder parser : parsers ) {
-						importSet.add( parser.getImport() );
+						PackageBuilder i = parser.getImport();
+						if (i != null)
+						{							
+							importSet.add( i );
+						}
 					}
 				}
 				final List<PackageBuilder> importList = new ArrayList<>();

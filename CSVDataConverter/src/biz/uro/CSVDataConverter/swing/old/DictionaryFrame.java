@@ -14,6 +14,7 @@ import javax.swing.border.EmptyBorder;
 
 import biz.uro.CSVDataConverter.swing.ProjectDataModel.IProjectDataReloadListener;
 import biz.uro.CSVDataConverter.swing.json.IJSONDataModel;
+import biz.uro.CSVDataConverter.swing.window.PropertyWindow;
 import biz.uro.CSVDataConverter.swing.window.component.EditableList;
 
 @SuppressWarnings("serial")

@@ -5,8 +5,8 @@ import java.awt.Component;
 import biz.uro.CSVDataConverter.swing.builder.ElementBuilder;
 import biz.uro.CSVDataConverter.swing.builder.FactoryMethodBuilder;
 import biz.uro.CSVDataConverter.swing.old.JSONListModel;
-import biz.uro.CSVDataConverter.swing.old.PropertyWindow;
 import biz.uro.CSVDataConverter.swing.util.ValidationUtil;
+import biz.uro.CSVDataConverter.swing.window.PropertyWindow;
 
 @SuppressWarnings("serial")
 public class FactoryMethodPropertyWindow extends PropertyWindow<FactoryMethodBuilder> {

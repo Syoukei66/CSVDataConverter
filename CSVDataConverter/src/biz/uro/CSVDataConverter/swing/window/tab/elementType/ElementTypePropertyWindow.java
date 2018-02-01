@@ -4,8 +4,8 @@ import javax.swing.JFrame;
 
 import biz.uro.CSVDataConverter.swing.ProjectDataModel;
 import biz.uro.CSVDataConverter.swing.builder.ElementTypeBuilder;
-import biz.uro.CSVDataConverter.swing.old.PropertyWindow;
 import biz.uro.CSVDataConverter.swing.util.ValidationUtil;
+import biz.uro.CSVDataConverter.swing.window.PropertyWindow;
 
 @SuppressWarnings("serial")
 public class ElementTypePropertyWindow extends PropertyWindow<ElementTypeBuilder> {

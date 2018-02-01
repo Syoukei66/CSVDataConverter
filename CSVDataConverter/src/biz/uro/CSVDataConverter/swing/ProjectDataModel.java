@@ -19,8 +19,8 @@ import biz.uro.CSVDataConverter.swing.builder.validator.ValidatorKindEnum_Static
 import biz.uro.CSVDataConverter.swing.json.JSONException;
 import biz.uro.CSVDataConverter.swing.json.JSONReader;
 import biz.uro.CSVDataConverter.swing.json.JSONWriter;
-import biz.uro.CSVDataConverter.swing.window.MainMenu;
 import biz.uro.CSVDataConverter.swing.test.TestProjectData;
+import biz.uro.CSVDataConverter.swing.window.MainMenu;
 
 public enum ProjectDataModel {
 	INSTANCE;
@@ -80,7 +80,7 @@ public enum ProjectDataModel {
 	
 	public void load( String path ) throws IOException {
 		setNowEditPath( path );
-		final TextFileReader tfr = new TextFileReader( path, ProjectData.EXTENTION );
+		final TextFileReader tfr = new TextFileReader( path );
 		tfr.open();
 		final ObjectMapper mapper = new ObjectMapper();		
 		final String jsonText = tfr.getRestText();
@@ -108,7 +108,7 @@ public enum ProjectDataModel {
 		final String jsonText = writer.build( mapper );
 		
 		if ( jsonText != null && jsonText.length() != 0 ) {
-			final TextFileWriter tfr = new TextFileWriter( path, ProjectData.EXTENTION );
+			final TextFileWriter tfr = new TextFileWriter( path );
 			tfr.open();
 			tfr.write( jsonText );			
 			tfr.close();

@@ -4,8 +4,8 @@ import java.awt.Component;
 
 import biz.uro.CSVDataConverter.swing.builder.ElementBuilder;
 import biz.uro.CSVDataConverter.swing.builder.StatementBuilder;
-import biz.uro.CSVDataConverter.swing.old.PropertyWindow;
 import biz.uro.CSVDataConverter.swing.util.ValidationUtil;
+import biz.uro.CSVDataConverter.swing.window.PropertyWindow;
 
 public class ElementPropertyWindow extends PropertyWindow<ElementBuilder> {
 

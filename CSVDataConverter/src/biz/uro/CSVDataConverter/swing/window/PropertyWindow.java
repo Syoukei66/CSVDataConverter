@@ -1,4 +1,4 @@
-package biz.uro.CSVDataConverter.swing.old;
+package biz.uro.CSVDataConverter.swing.window;
 
 import java.awt.Component;
 import java.awt.Dimension;
